@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<script>
+    const callback = (error, data) => {
+        if (error) {
+            console.log("callback error: ", error)
+        }
+        if (data) {
+            console.log("callback success: ", data)
+        }
+    }
+
+    function getTodos(id, callback) {
+
+        return new Promise((resolve, reject) => {
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && xhttp.status === 200) {
+                    const data = JSON.parse(xhttp.responseText);
+                    const datastring = JSON.stringify(data)
+                    // callback(undefined, data);
+                    // callback(undefined, datastring);
+                    // callback(undefined, xhttp.responseText);
+
+                    resolve(data)
+                }
+
+                if (this.readyState === 4 && xhttp.status !== 200) {
+                    // callback("something wrongs", undefined);
+                    reject("something wrongs")
+                }
+            };
+            xhttp.open("GET", `https://jsonplaceholder.typicode.com/todos/${id}`, true);
+            xhttp.send();
+        })
+    }
+
+    // async await
+    const getNewTodo = async (id) => {
+        let response1 = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`);
+        let data1 = await response1.json();
+        // console.log("get data", data1);
+        return data1
+    }
+
+    // đây là trường hợp pending
+    // console.log(getNewTodo())
+
+    // cách fix
+    getNewTodo(2).then(data1 => {
+        console.log("check data: ", data1);
+    })
+
+    // // fetch api (only use for get)
+    // fetch("https://jsonplaceholder.typicode.com/todos/")
+    //     .then(response => {
+    //         return response.json()
+    //     })
+    //     .then(data => {
+    //         console.log("check fetch data", data)
+    //     })
+
+    // // Chaining promise
+    // // .then để thực hiện việc đồng bọ, thằng nào đến trước thì thực hiện trước
+    // getTodos(1).then(data => {
+    //     console.log("get data: ", data);
+    //     return getTodos(2)
+    // }).then(data2 => {
+    //     console.log("get data: ", data2);
+    //     return getTodos(3)
+    // }).then(data3 => {
+    //     console.log("get data: ", data3);
+    // })
+
+    //     .catch(err => {
+    //         console.log("error: ", err);
+    //     })
+
+    // promise thuần
+    // getTodos(1).then(data => {
+    //     console.log("get data: ", data);
+
+    //     getTodos(2).then(data => {
+    //         console.log("get data 2: ", data);
+    //     })
+    // }).catch(err => {
+    //     console.log("error: ", err);
+    // })
+</script>
+
+<!-- promise -->
+<script>
+    const promiseExp = () => {
+        return new Promise((resolve, reject) => {
+            // resolve({ name: "clap", age: 25 })
+            reject("something went wrong")
+        })
+    }
+
+    promiseExp().then(data => {
+        console.log(data)
+    })
+        .catch(error => {
+            console.log(error)
+        })
+</script>
+
+<!-- ...is copy -->
+<script>
+    let arr1 = [1, 2, 3, 4, 5]
+    console.log("arr1: ", arr1)
+
+    let arr2 = [...arr1, 6]
+    console.log("arr2: ", arr2)
+
+    let state = {
+        name: "clap",
+        age: 25,
+        address: "HCM"
+    }
+
+    // cach 1
+    // let name = state.name
+    // let age = state.age
+    // let address = state.address
+    // cach 2
+    // let { name, age, address } = state
+
+    // console.log("check key: ", name, age, address)
+    let arr3 = ["clap", "HCM"]
+    let [name, address] = arr3
+    console.log(name, address)
+</script>
+
+<body>
+
+</body>
+
+</html>
